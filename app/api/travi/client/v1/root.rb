@@ -3,7 +3,9 @@ module Travi
     module V1
       class Root < Grape::API
         version 'v1', using: :path
-        prefix :client
+        prefix :user
+
+        mount ::Travi::Client::V1::Oauth
 
         add_swagger_documentation mount_path: '/swagger_doc',
                                   base_path: '/',
