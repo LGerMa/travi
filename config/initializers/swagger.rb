@@ -1,8 +1,8 @@
 GrapeSwaggerRails.options.before_action do |request|
   GrapeSwaggerRails.options.app_url = request.protocol + request.host_with_port
 
-  if request.path.match('/apidoc-client/').present?
-    GrapeSwaggerRails.options.url = '/client/v1/swagger_doc.json'
+  if request.path.match('/apidoc-user/').present?
+    GrapeSwaggerRails.options.url = '/user/v1/swagger_doc.json'
   end
 end
 
