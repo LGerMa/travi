@@ -34,10 +34,7 @@
     }
   },
   "addons": [
-    "heroku-postgresql",
-    "heroku-redis",
-    "papertrail",
-    "sendgrid"
+    "heroku-postgresql"
   ],
   "buildpacks": [
     {
