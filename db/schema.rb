@@ -10,10 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_30_204312) do
+ActiveRecord::Schema.define(version: 2018_07_01_005747) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "categories", force: :cascade do |t|
+    t.string "name"
+    t.boolean "visible", default: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "oauth_access_grants", force: :cascade do |t|
     t.integer "resource_owner_id", null: false
@@ -55,6 +62,76 @@ ActiveRecord::Schema.define(version: 2018_06_30_204312) do
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
   end
 
+  create_table "request_photos", force: :cascade do |t|
+    t.string "url_request_photo"
+    t.bigint "request_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["request_id"], name: "index_request_photos_on_request_id"
+  end
+
+  create_table "requests", force: :cascade do |t|
+    t.integer "type", default: 0
+    t.string "name_article"
+    t.string "price_article"
+    t.string "url_article"
+    t.float "weight_article", default: 0.0
+    t.date "date_required"
+    t.integer "amount", default: 0
+    t.text "note"
+    t.string "origin_place"
+    t.string "destination_place"
+    t.boolean "is_public", default: true
+    t.boolean "is_suggested_fare", default: false
+    t.integer "status", default: 0
+    t.integer "payment_method", default: 0
+    t.bigint "category_id"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category_id"], name: "index_requests_on_category_id"
+    t.index ["user_id"], name: "index_requests_on_user_id"
+  end
+
+  create_table "reviews", force: :cascade do |t|
+    t.text "review"
+    t.integer "stars", default: 0
+    t.string "reviewable_type"
+    t.bigint "reviewable_id"
+    t.string "ownerable_type"
+    t.bigint "ownerable_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ownerable_type", "ownerable_id"], name: "index_reviews_on_ownerable_type_and_ownerable_id"
+    t.index ["reviewable_type", "reviewable_id"], name: "index_reviews_on_reviewable_type_and_reviewable_id"
+  end
+
+  create_table "travelers", force: :cascade do |t|
+    t.string "url_document"
+    t.boolean "is_verified", default: false
+    t.integer "status", default: 0
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_travelers_on_user_id"
+  end
+
+  create_table "travels", force: :cascade do |t|
+    t.string "origin_place"
+    t.string "destination_place"
+    t.string "url_origin"
+    t.string "url_destination"
+    t.date "check_in"
+    t.date "check_out"
+    t.boolean "is_verified", default: false
+    t.integer "status", default: 0
+    t.float "suitcase_capacity", default: 0.0
+    t.bigint "traveler_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["traveler_id"], name: "index_travels_on_traveler_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "firstname"
     t.string "lastname"
@@ -89,4 +166,9 @@ ActiveRecord::Schema.define(version: 2018_06_30_204312) do
 
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
+  add_foreign_key "request_photos", "requests"
+  add_foreign_key "requests", "categories"
+  add_foreign_key "requests", "users"
+  add_foreign_key "travelers", "users"
+  add_foreign_key "travels", "travelers"
 end
